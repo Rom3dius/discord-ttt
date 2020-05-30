@@ -16,7 +16,7 @@ To install for a **dedicated server** follow these instructions but with your se
 4. Install pip in the embedded PyGmod Python:
 * Download [get-pip.py]("https://bootstrap.pypa.io/get-pip.py")
 * Open a powershell window for Windows or Terminal for Linux
-* Execute the following `./`_path to your gmod folder_`/python.exe` _path to get-pip.py_
+* Execute the following `./PATHTOGMOD/python.exe get-pip.py`
 5. Clone or download this repository, copying the **entire** folder into your [Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/ "Garry's Mod") addons folder.
 6. Edit the config.py file located in the subdirectory python/discord-bot, add your [bot token](https://www.writebots.com/discord-bot-token/ "Bots token") and [channel id](https://www.swipetips.com/how-to-get-channel-id-in-discord/ "channel id"). Make sure to add only the channel id number.
 
