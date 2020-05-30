@@ -19,6 +19,7 @@ except ModuleNotFoundError:
         sys.exit("Caught error while trying to install requests! Check pip and internet connection!")
 import requests
 
+os.system("bot.py")
 
 # initializing hooks
 def onPlayerInitialSpawn(ply, args):
