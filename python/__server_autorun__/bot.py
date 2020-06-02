@@ -1,10 +1,8 @@
 # modules
-import asyncio, pickle, config
+import asyncio, pickle, config, json
 from aiohttp import web
+import discord
 from discord.ext import commands
-
-# values
-channelid = 0 # integer value
 
 # check ids.p file
 try:
@@ -33,15 +31,22 @@ runner = web.AppRunner(app)
 bot = commands.Bot(command_prefix="!")
 
 @bot.command(pass_context=True)
-async def ping(ctx, arg1):
+async def ping(ctx, *, arg1):
     await ctx.send(str(arg1))
+
+@bot.command()
+async def check(ctx):
+    connected_guild = bot.get_guild(config.guild)
+    guild_id = connected_guild.id
+    await ctx.send("Connected to: \n" + str(guild_id) + "\n" + "Latency: \n" + str(bot.latency))
 
 @bot.command(pass_context=True)
 async def register(ctx, arg1):
     await ctx.send("Please double check to make sure this is your SteamID!")
-    ids[ctx.author.id] = arg1
+    ids[arg1] = ctx.author.id
     pickle.dump(ids, open("ids.p", "wb"))
 
+"""
 @bot.event
 async def on_voice_state_update(member, before, after):
     print("Voice update!")
@@ -53,36 +58,49 @@ async def on_voice_state_update(member, before, after):
                 await member.edit(mute = False, reason = None)
         else:
             await member.edit(mute = False, reason = None)
+"""
 
-@routes.get('/ondeath')
+@routes.post('/ondeath')
 async def ondeath(request):
-    await request.json
-    player = json.loads(json.dumps(request.json))["Player"]
-    member = discord.Guild.get_member(ids[player])
+    print("Player died!")
+    post = await request.post()
+    player = post.get('Player')
+    #player = json.loads(json.dumps(request.json))["Player"]
+    connected_guild = bot.get_guild(config.guild)
+    member = connected_guild.get_member(ids[player])
     await member.edit(mute = True, reason = None)
     muted.append(ids[player])
 
-@routes.get('/onspawn')
+@routes.post('/onspawn')
 async def onspawn(request):
-    await request.json
-    player = json.loads(json.dumps(request.json))["Player"]
-    member = discord.Guild.get_member(ids[player])
+    print("Player spawned!")
+    post = await request.post()
+    player = post.get('Player')
+    #player = json.loads(json.dumps(request.json))["Player"]
+    connected_guild = bot.get_guild(config.guild)
+    member = connected_guild.get_member(ids[player])
     await member.edit(mute = False, reason = None)
     muted.remove(ids[player])
 
-@routes.get('/onspawnasspectator')
+@routes.post('/onspawnasspectator')
 async def onspectatorspawn(request):
-    await request.json
-    player = json.loads(json.dumps(request.json))["Player"]
-    member = discord.Guild.get_member(ids[player])
+    print("Player spawned as spectator!")
+    post = await request.post()
+    player = post.get('Player')
+    #player = json.loads(json.dumps(request.json))["Player"]
+    connected_guild = bot.get_guild(config.guild)
+    member = connected_guild.get_member(ids[player])
     await member.edit(mute = True, reason = None)
     muted.append(ids[player])
 
-@routes.get('/ondisconnect')
+@routes.post('/ondisconnect')
 async def ondisconnect(request):
-    await request.json
-    player = json.loads(json.dumps(request.json))["Player"]
-    member = discord.Guild.get_member(ids[player])
+    print("Player disconnected!")
+    post = await request.post()
+    player = post.get('Player')
+    #player = json.loads(json.dumps(request.json))["Player"]
+    connected_guild = bot.get_guild(config.guild)
+    member = connected_guild.get_member(ids[player])
     await member.edit(mute = False, reason = None)
     muted.remove(ids[player])
 

@@ -1,5 +1,5 @@
 from pygmod.gmodapi import *
-import pickle, asyncio, os, sys
+import pickle, os, sys
 
 
 # dependency check
@@ -28,30 +28,34 @@ def onPlayerInitialSpawn(ply, args):
 
 hook.Add('PlayerInitialSpawn', 'onPlayerInitialSpawn', onPlayerInitialSpawn)
 
-async def onPlayerDeath(victim, inflictor, attacker):
+def onPlayerDeath(victim, inflictor, attacker):
     death = victim._.SteamID()
+    print(death + " has died!")
     data = {"Player": death}
-    request = requests.get("http://127.0.0.1:8080/ondeath", data = data)
+    request = requests.post("http://127.0.0.1:8080/ondeath", data = data)
 
 hook.Add('PlayerDeath', 'onPlayerDeath', onPlayerDeath)
 
 def onPlayerSpawn(ply, args):
     spawn = ply._.SteamID()
+    print(spawn + " has spawned!")
     data = {"Player": spawn}
-    request = requests.get("http://127.0.0.1:8080/onspawn", data = data)
+    request = requests.post("http://127.0.0.1:8080/onspawn", data = data)
 
 hook.Add('PlayerSpawn', 'onPlayerSpawn', onPlayerSpawn)
 
 def onPlayerSpawnAsSpectator(ply, args):
     spawn = ply._.SteamID()
+    print(spawn + " has started spectating!")
     data = {"Player": spawn}
-    request = requests.get("http://127.0.0.1:8080/onspawnasspectator", data = data)
+    request = requests.post("http://127.0.0.1:8080/onspawnasspectator", data = data)
 
 hook.Add('PlayerSpawnAsSpectator', 'onPlayerSpawnAsSpectator', onPlayerSpawnAsSpectator)
 
 def onPlayerDisconnect(ply, args):
     disconnect = ply._.SteamID()
+    print(disconnect + " has disconnected!")
     data = {"Player": disconnect}
-    request = requests.get("http://127.0.0.1:8080/ondisconnect", data = data)
+    request = requests.post("http://127.0.0.1:8080/ondisconnect", data = data)
 
 hook.Add('PlayerDisconnected', 'onPlayerDisconnect', onPlayerDisconnect)

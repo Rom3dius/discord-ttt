@@ -1,2 +1,3 @@
-channelid = 0
-token = ""
+guild = 
+channelid =
+token =
