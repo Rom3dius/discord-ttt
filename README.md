@@ -18,7 +18,7 @@ To install for a **dedicated server** follow these instructions but with your se
 * Open a powershell window for Windows or Terminal for Linux
 * Execute the following `./PATHTOGMOD/python.exe get-pip.py`
 5. Clone or download this repository, copying the **entire** folder into your [Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/ "Garry's Mod") addons folder.
-6. Edit the config.py file located in the subdirectory python/discord-bot, add your [bot token](https://www.writebots.com/discord-bot-token/ "Bots token") and [channel id](https://www.swipetips.com/how-to-get-channel-id-in-discord/ "channel id"). Make sure to add only the channel id number.
+6. Edit the config.py file located in the subdirectory python/discord-bot, add your [guild id](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-), [channel id](https://www.swipetips.com/how-to-get-channel-id-in-discord/ "channel id") and [bot token](https://www.writebots.com/discord-bot-token/ "Bots token"). Make sure to add only the channel id number.
 
 ### Troubleshooting
 * Make sure to copy the **entire folder** to your GMod addons folder, not simply the root of the folder.
