@@ -1,5 +1,5 @@
 # modules
-import asyncio, pickle, config, json
+import asyncio, pickle, config, json, sys
 from aiohttp import web
 import discord
 from discord.ext import commands
@@ -28,7 +28,7 @@ app = web.Application()
 runner = web.AppRunner(app)
 
 # the bot
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix=config.prefix)
 
 @bot.command(pass_context=True)
 async def ping(ctx, *, arg1):
@@ -42,14 +42,12 @@ async def check(ctx):
 
 @bot.command(pass_context=True)
 async def register(ctx, arg1):
-    await ctx.send("Please double check to make sure this is your SteamID!")
+    await ctx.send(ctx.author.mention + ", you have now registered your SteamID: " + arg1)
     ids[arg1] = ctx.author.id
-    pickle.dump(ids, open("ids.p", "wb"))
 
-"""
 @bot.event
 async def on_voice_state_update(member, before, after):
-    print("Voice update!")
+    print("Member " + member.id + " has joined " + after.channel.id)
     for x in muted:
         if x == member.id:
             if after.channel.id == channelid:
@@ -58,7 +56,13 @@ async def on_voice_state_update(member, before, after):
                 await member.edit(mute = False, reason = None)
         else:
             await member.edit(mute = False, reason = None)
-"""
+    if after.channel.id == channelid:
+        for x in ids:
+            if x == member.id:
+                pass
+            else:
+                await dm = member.create_dm()
+                await dm.send("In order to join the TTT voice channel use the command " + config.prefix + "register (SteamID)" + "\nYour SteamID can be found here: https://steamid.io/ \nExecute this command in the respective discord servers chat!" )
 
 @routes.post('/ondeath')
 async def ondeath(request):
@@ -68,7 +72,8 @@ async def ondeath(request):
     #player = json.loads(json.dumps(request.json))["Player"]
     connected_guild = bot.get_guild(config.guild)
     member = connected_guild.get_member(ids[player])
-    await member.edit(mute = True, reason = None)
+    if member.voice.channel.id == channelid:
+        await member.edit(mute = True, reason = None)
     muted.append(ids[player])
 
 @routes.post('/onspawn')
@@ -90,7 +95,8 @@ async def onspectatorspawn(request):
     #player = json.loads(json.dumps(request.json))["Player"]
     connected_guild = bot.get_guild(config.guild)
     member = connected_guild.get_member(ids[player])
-    await member.edit(mute = True, reason = None)
+    if member.voice.channel.id == channelid:
+        await member.edit(mute = True, reason = None)
     muted.append(ids[player])
 
 @routes.post('/ondisconnect')
@@ -110,10 +116,14 @@ async def pong(request):
 
 asyncio.ensure_future(bot.start(config.token), loop=loop)
 
-# aiohttp
-if __name__ == '__main__':
-    app.add_routes(routes)
-    web.run_app(app)
+try:
+    # aiohttp
+    if __name__ == '__main__':
+        app.add_routes(routes)
+        web.run_app(app)
+except KeyboardInterrupt:
+    pickle.dump(ids, open("ids.p", "wb"))
+    sys.exit()
 
 #runner = web.AppRunner(app)
 #runner.setup()

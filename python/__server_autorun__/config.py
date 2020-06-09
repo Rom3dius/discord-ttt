@@ -1,3 +1,4 @@
-guild = 
+guild =
 channelid =
-token =
+token = ""
+prefix = "!"
